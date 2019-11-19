@@ -1,0 +1,41 @@
+{
+    "local": {
+        "PORT": 8090,
+        "ACCSS_LOG_PATH": "/var/log/appname",
+        "DB_FILE_NAME": "\\cred.xml",
+        "API_PREFIX": "/appname/services/",
+        "NODE_TLS_REJECT_UNAUTHORIZED": 0,
+        "HTTP_REQUEST_TIMEOUT": 15000,
+        "MONGO_DB_SERVER": "db-mongodev.appname",
+        "MONGO_DB_PORT": 27017,
+        "MONGO_DB_AUTH_MECHANISM": "SCRAM-SHA-1",
+        "MONGO_DB_CONNECTION_POOL_SIZE": 10,
+        "MONGO_DB_NAME": "AppName"
+    },
+    "development": {
+        "PORT": 8090,
+        "ACCSS_LOG_PATH": "/var/log/appname",
+        "DB_FILE_NAME": "\\cred.xml",
+        "API_PREFIX": "/appname/services/",
+        "NODE_TLS_REJECT_UNAUTHORIZED": 0,
+        "HTTP_REQUEST_TIMEOUT": 15000,
+        "MONGO_DB_SERVER": "db-mongodev.appname",
+        "MONGO_DB_PORT": 27017,
+        "MONGO_DB_AUTH_MECHANISM": "SCRAM-SHA-1",
+        "MONGO_DB_CONNECTION_POOL_SIZE": 10,
+        "MONGO_DB_NAME": "AppName"
+    },
+    "qa": {
+        "PORT": 8090,
+        "ACCSS_LOG_PATH": "/var/log/appname",
+        "DB_FILE_NAME": "\\cred.xml",
+        "API_PREFIX": "/appname/services/",
+        "NODE_TLS_REJECT_UNAUTHORIZED": 0,
+        "HTTP_REQUEST_TIMEOUT": 15000,
+        "MONGO_DB_SERVER": "db-mongodev.appname",
+        "MONGO_DB_PORT": 27017,
+        "MONGO_DB_AUTH_MECHANISM": "SCRAM-SHA-1",
+        "MONGO_DB_CONNECTION_POOL_SIZE": 10,
+        "MONGO_DB_NAME": "AppName"
+    }
+}
