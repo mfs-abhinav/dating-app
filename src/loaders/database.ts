@@ -1,32 +1,29 @@
-import { MongoClient } from 'mongodb';
+import mongoose from 'mongoose';
 import logger from './logger';
 
-let mongoClient: MongoClient;
-
 export const initialize = async () => {
-    await initializeMongoDb(global['gConfig']['appCred']['mongo']);
-};
 
-let mongoDbConnection: any;
-
-export const initializeMongoDb = async (mongoConfig) => {
     try {
-        mongoClient = await MongoClient.connect(mongoConfig.url, {
-            poolSize: mongoConfig.MONGO_DB_CONNECTION_POOL_SIZE,
-            useNewUrlParser: true, useUnifiedTopology: true
+        // connect to mongodb
+        await mongoose.connect(global['gConfig'].MONGO_DB_SERVER_URL, {
+            poolSize: global['gConfig'].MONGO_DB_CONNECTION_POOL_SIZE,
+            useNewUrlParser: true,
+            useUnifiedTopology: true
         });
-
-        mongoDbConnection = mongoClient.db(`${mongoConfig.dataBaseName.toLowerCase()}`);
-
-    } catch (err) {
-        logger.error(err);
+    } catch (error) {
+        logger.error(error);
     }
 };
 
-export const closeMongoConnection = () => {
-    mongoClient.close();
-};
+// on connection success
+mongoose.connection.on('connected', () => {
+    logger.info('Connected to mongo database');
+});
 
-export const getMongoDbConnection = () => {
-    return mongoDbConnection;
-};
+// on connection failure
+mongoose.connection.on('error', err => {
+    if (err) {
+        logger.error('Error in database connection: ' + err);
+    }
+});
+

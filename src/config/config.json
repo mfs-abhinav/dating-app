@@ -6,11 +6,9 @@
         "API_PREFIX": "/appname/services/",
         "NODE_TLS_REJECT_UNAUTHORIZED": 0,
         "HTTP_REQUEST_TIMEOUT": 15000,
-        "MONGO_DB_SERVER": "db-mongodev.appname",
-        "MONGO_DB_PORT": 27017,
+        "MONGO_DB_SERVER_URL": "mongodb+srv://admin:password_123@cluster0-v8tdz.mongodb.net/test?retryWrites=true&w=majority",
         "MONGO_DB_AUTH_MECHANISM": "SCRAM-SHA-1",
-        "MONGO_DB_CONNECTION_POOL_SIZE": 10,
-        "MONGO_DB_NAME": "AppName"
+        "MONGO_DB_CONNECTION_POOL_SIZE": 10
     },
     "development": {
         "PORT": 8090,
@@ -19,11 +17,9 @@
         "API_PREFIX": "/appname/services/",
         "NODE_TLS_REJECT_UNAUTHORIZED": 0,
         "HTTP_REQUEST_TIMEOUT": 15000,
-        "MONGO_DB_SERVER": "db-mongodev.appname",
-        "MONGO_DB_PORT": 27017,
+        "MONGO_DB_SERVER_URL": "mongodb+srv://admin:password_123@cluster0-v8tdz.mongodb.net/test?retryWrites=true&w=majority",
         "MONGO_DB_AUTH_MECHANISM": "SCRAM-SHA-1",
-        "MONGO_DB_CONNECTION_POOL_SIZE": 10,
-        "MONGO_DB_NAME": "AppName"
+        "MONGO_DB_CONNECTION_POOL_SIZE": 10
     },
     "qa": {
         "PORT": 8090,
@@ -32,10 +28,8 @@
         "API_PREFIX": "/appname/services/",
         "NODE_TLS_REJECT_UNAUTHORIZED": 0,
         "HTTP_REQUEST_TIMEOUT": 15000,
-        "MONGO_DB_SERVER": "db-mongodev.appname",
-        "MONGO_DB_PORT": 27017,
+        "MONGO_DB_SERVER_URL": "mongodb+srv://admin:password_123@cluster0-v8tdz.mongodb.net/test?retryWrites=true&w=majority",
         "MONGO_DB_AUTH_MECHANISM": "SCRAM-SHA-1",
-        "MONGO_DB_CONNECTION_POOL_SIZE": 10,
-        "MONGO_DB_NAME": "AppName"
+        "MONGO_DB_CONNECTION_POOL_SIZE": 10
     }
 }

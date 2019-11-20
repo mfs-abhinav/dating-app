@@ -10,7 +10,7 @@ export default async (app: any) => {
   await configLoader.reload();
 
   // load db configuration
-  // await database.initialize();
+  await database.initialize();
 
   // load swagger doc
   swaggerLoader(app);
