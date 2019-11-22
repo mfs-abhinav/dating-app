@@ -49,6 +49,35 @@ router.post('/login', (req: express.Request, res: express.Response) => authentic
 /**
  * @swagger
  * paths:
+ * /signUp:
+ *   post:
+ *     tags:
+ *       - SignUp
+ *     name: signUp
+ *     summary: Process authentication
+ *     operationId: signUp
+ *     parameters:
+ *      - name: body
+ *        in: body
+ *        schema:
+ *          type: object
+ *          properties:
+ *            email:
+ *              type: string
+ *              example: test@test.com
+ *            password:
+ *              type: string
+ *              example: password1
+ *     responses:
+ *      200:
+ *       description: User created in successfully
+ */
+// Route for signUp action
+router.post('/signUp', (req: express.Request, res: express.Response) => user.signUp(req, res));
+
+/**
+ * @swagger
+ * paths:
  * /logout:
  *   post:
  *     tags:
@@ -62,33 +91,6 @@ router.post('/login', (req: express.Request, res: express.Response) => authentic
  */
 // Route for logout action
 router.post('/logout', (req: express.Request, res: express.Response) => authenticate.processLogout(req, res));
-
-
-/**
- * @swagger
- * paths:
- * /user/info:
- *   get:
- *     tags:
- *       - User
- *     operationId: userInfo
- *     description: Get logged in user info
- *     produces:
- *       - application/json
- *     responses:
- *       200:
- *         description: Success
- *       401:
- *         description: Unauthorized request
- *       404:
- *         description: Record not found
- *       500:
- *         description: Server error
- */
-// Route to get the logged in user info
-router.get('/user/info', (req: express.Request, res: express.Response) => {
-    user.getLoggedInUserInfo(req, res);
-});
 
 
 export default router;
