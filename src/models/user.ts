@@ -1,8 +1,20 @@
-import mongoose, { Schema } from 'mongoose';
+import httpStatus from 'http-status-codes';
+import { Document, Schema, Model, model} from 'mongoose';
 import validator from 'validator';
 import * as _ from 'lodash';
+import AppError from '../utils/appError';
 
-const UserSchema: Schema = new Schema({
+interface IUser extends Document {
+    email: string;
+    password: string;
+    toJSON(): string;
+}
+
+export interface IUserModel extends Model<IUser> {
+    findByCredentials(email: string, password: string): any;
+}
+
+const userSchema: Schema = new Schema({
     email: {
         type: String,
         required: true,
@@ -20,5 +32,22 @@ const UserSchema: Schema = new Schema({
     }
 });
 
-export default mongoose.model('User', UserSchema);
+userSchema.methods.toJSON = function() {
+    const user = this;
+    const userObject = user.toObject();
+
+    return _.pick(userObject, ['_id', 'email']);
+};
+
+userSchema.statics.findByCredentials = async function(email: string, password: string) {
+    const user = await this.findOne({email});
+    if (!user || password !== user.password) {
+        return Promise.reject(new AppError('Invalid email or password', httpStatus.UNAUTHORIZED));
+    }
+    return user;
+};
+
+export const User: IUserModel = model<IUser, IUserModel>('User', userSchema);
+
+export default User;
 

@@ -29,7 +29,7 @@ router.get('/', (req, res) => {
  *        schema:
  *          type: object
  *          properties:
- *            userName:
+ *            email:
  *              type: string
  *              example: test@test.com
  *            password:
@@ -39,9 +39,9 @@ router.get('/', (req, res) => {
  *      200:
  *       description: User found and logged in successfully
  *      401:
- *       description: Username not found in DB / Password does not match / User account locked / User password expired / New user login
+ *       description: email not found in DB / Password does not match / User account locked / User password expired / New user login
  *      400:
- *       description: Username or password missing
+ *       description: email or password missing
  */
 // Route for login action
 router.post('/login', (req: express.Request, res: express.Response) => authenticate.processLogin(req, res));

@@ -1,9 +1,9 @@
 {
     "local": {
         "PORT": 8090,
-        "ACCSS_LOG_PATH": "/var/log/appname",
+        "ACCSS_LOG_PATH": "/var/log/datingapp",
         "DB_FILE_NAME": "\\cred.xml",
-        "API_PREFIX": "/appname/services/",
+        "API_PREFIX": "/datingapp/services/",
         "NODE_TLS_REJECT_UNAUTHORIZED": 0,
         "HTTP_REQUEST_TIMEOUT": 15000,
         "MONGO_DB_SERVER_URL": "mongodb+srv://admin:password_123@cluster0-v8tdz.mongodb.net/test?retryWrites=true&w=majority",
@@ -12,9 +12,9 @@
     },
     "development": {
         "PORT": 8090,
-        "ACCSS_LOG_PATH": "/var/log/appname",
+        "ACCSS_LOG_PATH": "/var/log/datingapp",
         "DB_FILE_NAME": "\\cred.xml",
-        "API_PREFIX": "/appname/services/",
+        "API_PREFIX": "/datingapp/services/",
         "NODE_TLS_REJECT_UNAUTHORIZED": 0,
         "HTTP_REQUEST_TIMEOUT": 15000,
         "MONGO_DB_SERVER_URL": "mongodb+srv://admin:password_123@cluster0-v8tdz.mongodb.net/test?retryWrites=true&w=majority",
@@ -23,9 +23,9 @@
     },
     "qa": {
         "PORT": 8090,
-        "ACCSS_LOG_PATH": "/var/log/appname",
+        "ACCSS_LOG_PATH": "/var/log/datingapp",
         "DB_FILE_NAME": "\\cred.xml",
-        "API_PREFIX": "/appname/services/",
+        "API_PREFIX": "/datingapp/services/",
         "NODE_TLS_REJECT_UNAUTHORIZED": 0,
         "HTTP_REQUEST_TIMEOUT": 15000,
         "MONGO_DB_SERVER_URL": "mongodb+srv://admin:password_123@cluster0-v8tdz.mongodb.net/test?retryWrites=true&w=majority",

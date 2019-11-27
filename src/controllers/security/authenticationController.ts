@@ -3,6 +3,7 @@ import httpStatus from 'http-status-codes';
 
 import AuthenticationService from '../../services/security/authenticationService';
 import logger from '../../loaders/logger';
+import User from '../../models/user';
 
 
 class AuthenticationController {
@@ -14,11 +15,16 @@ class AuthenticationController {
     public async processLogin(req: Request, res: Response) {
 
         try {
-            res.status(httpStatus.OK).json('Success');
+            const email = req.body.email;
+            const password = req.body.password;
+
+            const user = await User.findByCredentials(email, password);
+            res.status(httpStatus.OK).json(user);
+
         } catch (err) {
             delete req.body.password; // Remove password before logging the params
             logger.error(`controller.AuthenticationController:processLogin - ${JSON.stringify(err.message)} - incoming request parameters- ${JSON.stringify(req.body)}`);
-            res.status(err.status || httpStatus.INTERNAL_SERVER_ERROR).json('Error Occured');
+            res.status(err.status || httpStatus.INTERNAL_SERVER_ERROR).json(err.message || 'Error Occured');
         }
     }
 

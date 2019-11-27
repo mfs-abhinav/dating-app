@@ -5,7 +5,7 @@ const transports = [];
 const DEFAULT_LOG_LEVEL = 'info';
 
 transports.push(new DailyRotateFile({
-    filename: '/var/log/appNameBackend/application-%DATE%.log',
+    filename: `/var/log/datingapp/application-%DATE%.log`,
     datePattern: 'MM-DD-YYYY',
     zippedArchive: true,
     handleExceptions: true,
