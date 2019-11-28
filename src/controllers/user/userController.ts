@@ -25,12 +25,10 @@ class UserController {
     public async signUp(req: Request, res: Response) {
         try {
             const newUser = new User(req.body);
-            newUser.save((err, user) => {
-                if (err) {
-                    res.send(err);
-                }
-                res.json(user);
-            });
+            const user = await newUser.save();
+
+            res.json(user);
+
         } catch (err) {
             logger.error(`controller.UserController:signUp - ${JSON.stringify(err.message)}`);
             res.status(err.status || httpStatus.INTERNAL_SERVER_ERROR).json({});

@@ -3,6 +3,8 @@ import { Document, Schema, Model, model} from 'mongoose';
 import validator from 'validator';
 import * as _ from 'lodash';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+
 import AppError from '../utils/appError';
 
 interface IUser extends Document {
@@ -64,11 +66,27 @@ userSchema.methods.generateAuthToken = async function() {
 
 userSchema.statics.findByCredentials = async function(email: string, password: string) {
     const user = await this.findOne({email});
-    if (!user || password !== user.password) {
+    const passwordMatched = await bcrypt.compare(password, user.password);
+
+    if (!user || !passwordMatched) {
         return Promise.reject(new AppError('Invalid email or password', httpStatus.UNAUTHORIZED));
     }
+
     return user;
 };
+
+userSchema.pre('save', async function(this: IUser, next) {
+    const user = this;
+    if (user.isModified('password')) {
+        const salt = await bcrypt.genSalt();
+        const hashedPassword = await bcrypt.hash(user.password, salt);
+        user.password = hashedPassword;
+
+        next();
+    } else {
+        next();
+    }
+});
 
 export const User: IUserModel = model<IUser, IUserModel>('User', userSchema);
 
