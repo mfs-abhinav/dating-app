@@ -13,15 +13,6 @@ class UserController {
         this.userService = userService || new UserService();
     }
 
-    public async getLoggedInUserInfo(req: Request, res: Response) {
-        try {
-
-        } catch (err) {
-            logger.error(`controller.UserController:getLoggedInUserInfo - ${JSON.stringify(err.message)}`);
-            res.status(err.status || httpStatus.INTERNAL_SERVER_ERROR).json({});
-        }
-    }
-
     public async register(req: Request, res: Response) {
         try {
             const newUser = new User(req.body);

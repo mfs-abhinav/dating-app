@@ -1,6 +1,5 @@
 import express from 'express';
 
-import { authenticateRequest } from '../../middlewares/requestAuthentication';
 import Authentication from '../../controllers/security/authenticationController';
 import UserController from '../../controllers/user/userController';
 
@@ -93,6 +92,107 @@ router.post('/user/register', (req: express.Request, res: express.Response) => u
 // Route for logout action
 router.post('/logout', (req: express.Request, res: express.Response) => authenticate.processLogout(req, res));
 
+/**
+ * @swagger
+ * paths:
+ * /passwordResetToken:
+ *   post:
+ *     tags:
+ *       - Password Reset Token
+ *     name: passwordResetToken
+ *     summary: Reset password Token
+ *     operationId: passwordResetToken
+ *     parameters:
+ *      - name: body
+ *        in: body
+ *        schema:
+ *          type: object
+ *          properties:
+ *            email:
+ *              type: string
+ *              example: test@test.com
+ *     responses:
+ *      200:
+ *       description: User found and reset link is sent in successfully
+ *      401:
+ *       description: email not found in DB
+ *      400:
+ *       description: email or password missing
+ */
+// Route for password reset action
+router.post('/passwordResetToken', (req: express.Request, res: express.Response) => authenticate.passwordResetToken(req, res));
+
+/**
+ * @swagger
+ * paths:
+ * /resetpassword/{id}/{token}:
+ *   get:
+ *     tags:
+ *       - Verify Password Reset Token
+ *     summary: Verify password reset token
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - description: UserId
+ *         in: path
+ *         name: id
+ *         required: true
+ *         type: string
+ *       - description: token
+ *         in: path
+ *         name: token
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: Success
+ *       401:
+ *         description: Unauthorized request
+ *       404:
+ *         description: Record not found
+ *       400:
+ *         description: Bad data requested
+ *       500:
+ *         description: Server error
+ */
+// Route for password reset action
+router.get('/resetpassword/:id/:token', (req: express.Request, res: express.Response) => authenticate.verifyPasswordResetToken(req, res));
+
+/**
+ * @swagger
+ * paths:
+ * /resetpassword:
+ *   post:
+ *     tags:
+ *       - Password Reset
+ *     name: resetpassword
+ *     summary: Reset password
+ *     operationId: resetpassword
+ *     parameters:
+ *      - name: body
+ *        in: body
+ *        schema:
+ *          type: object
+ *          properties:
+ *            id:
+ *              type: string
+ *              example: userId
+ *            token:
+ *              type: string
+ *              example: token
+ *            password:
+ *              type: string
+ *              example: newpassword
+ *     responses:
+ *      200:
+ *       description: Password reset successfully
+ *      401:
+ *       description: email not found in DB
+ *      400:
+ *       description: email or password missing
+ */
+// Route for reset password with new password
+router.post('/resetpassword', (req: express.Request, res: express.Response) => authenticate.resetPassword(req, res));
 
 export default router;
 

@@ -39,12 +39,19 @@ export default (app: express.Express) => {
         }
     }));
 
+    const regexEscape = (s: string) => {
+        return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    };
+
     // middleware for request authentication
     app.use(authenticateRequest.unless({
         path: [
             { url: `${global['gConfig'].API_PREFIX}v1`, methods: ['GET'] },
             { url: `${global['gConfig'].API_PREFIX}v1/login`, methods: ['POST'] },
-            { url: `${global['gConfig'].API_PREFIX}v1/user/register`, methods: ['POST'] }
+            { url: `${global['gConfig'].API_PREFIX}v1/user/register`, methods: ['POST'] },
+            { url: `${global['gConfig'].API_PREFIX}v1/passwordResetToken`, methods: ['POST'] },
+            { url: `${global['gConfig'].API_PREFIX}v1/resetpassword`, methods: ['POST'] },
+            { url: new RegExp(regexEscape(global['gConfig'].API_PREFIX) + 'v1\/resetpassword\/.*/'), methods: ['GET'] }
         ]
     }));
 

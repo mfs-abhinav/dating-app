@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status-codes';
+import jwt from 'jsonwebtoken';
 
 import AuthenticationService from '../../services/security/authenticationService';
 import logger from '../../loaders/logger';
@@ -8,10 +9,12 @@ import User from '../../models/user';
 
 class AuthenticationController {
     authenticationService: AuthenticationService;
+
     constructor(authenticationService ?: AuthenticationService) {
         this.authenticationService = authenticationService === undefined ? new AuthenticationService() : authenticationService;
     }
 
+    // method to process login
     public async processLogin(req: Request, res: Response) {
 
         try {
@@ -30,7 +33,7 @@ class AuthenticationController {
         }
     }
 
-    // method to process logout and close events
+    // method to process logout
     public async processLogout(req: Request, res: Response) {
 
         try {
@@ -39,6 +42,75 @@ class AuthenticationController {
         } catch (err) {
             logger.error(`controller.AuthenticationController:processLogout - ${JSON.stringify(err.message)}`);
             res.status(httpStatus.UNAUTHORIZED).json('Logout failed');
+        }
+    }
+
+    // method to generate token for reset password
+    public async passwordResetToken(req: Request, res: Response) {
+        if (req.body.email !== undefined) {
+
+            const user = await User.findOne({email: req.body.email});
+            if (!user) {
+               res.send('Email address not found in system.');
+            }
+            const payload = {
+                id: user._id,        // User ID from database
+                email: user.email
+            };
+
+            const secret = user.password + '-' + user.created_at.getTime();
+            const token = jwt.sign(payload, secret).toString();
+
+            // TODO: Send email containing link to reset password.
+            // In our case, will just return a link to click.
+            res.send('<a href="/resetpassword/' + payload.id + '/' + token + '">Reset password</a>');
+        } else {
+            res.send('Email address is missing.');
+        }
+    }
+
+    // method to verify reset password token
+    public async verifyPasswordResetToken(req: Request, res: Response) {
+        const { id, token } = req.params;
+        if (!id || !token) {
+            res.send('Something is wrong.');
+        }
+
+        try {
+            const user = await User.findOne({_id: id});
+            const secret = user.password + '-' + user.created_at.getTime();
+            const payload = jwt.verify(token, secret);
+
+            // TODO:Create form to reset password.
+            res.send('<form action="/resetpassword" method="POST">' +
+                        '<input type="hidden" name="id" value="' + payload['id'] + '" />' +
+                        '<input type="hidden" name="token" value="' + req.params.token + '" />' +
+                        '<input type="password" name="password" value="" placeholder="Enter your new password..." />' +
+                        '<input type="submit" value="Reset Password" />' +
+                    '</form>');
+        } catch (error) {
+            res.send('Invalid token.');
+        }
+    }
+
+    // method to reset password
+    public async resetPassword(req: Request, res: Response) {
+
+        try {
+            const { id, token, password } = req.body;
+            if (!id || !token || !password) {
+                res.send('Something is wrong.');
+            }
+
+            const user = await User.findOne({_id: id});
+            const secret = user.password + '-' + user.created_at.getTime();
+            const payload = jwt.verify(token, secret);
+            user.password = password;
+
+            await user.save();
+            res.send('Your password has been successfully changed.');
+        } catch (error) {
+            res.send('Password reset failed.');
         }
     }
 }
