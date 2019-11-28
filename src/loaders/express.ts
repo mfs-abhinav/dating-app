@@ -43,7 +43,8 @@ export default (app: express.Express) => {
     app.use(authenticateRequest.unless({
         path: [
             { url: `${global['gConfig'].API_PREFIX}v1`, methods: ['GET'] },
-            { url: `${global['gConfig'].API_PREFIX}v1/login`, methods: ['POST'] }
+            { url: `${global['gConfig'].API_PREFIX}v1/login`, methods: ['POST'] },
+            { url: `${global['gConfig'].API_PREFIX}v1/user/register`, methods: ['POST'] }
         ]
     }));
 

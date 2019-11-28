@@ -50,13 +50,13 @@ router.post('/login', (req: express.Request, res: express.Response) => authentic
 /**
  * @swagger
  * paths:
- * /signUp:
+ * /user/register:
  *   post:
  *     tags:
- *       - SignUp
- *     name: signUp
- *     summary: Process authentication
- *     operationId: signUp
+ *       - Register
+ *     name: register
+ *     summary: Register user
+ *     operationId: register
  *     parameters:
  *      - name: body
  *        in: body
@@ -73,8 +73,8 @@ router.post('/login', (req: express.Request, res: express.Response) => authentic
  *      200:
  *       description: User created in successfully
  */
-// Route for signUp action
-router.post('/signUp', (req: express.Request, res: express.Response) => user.signUp(req, res));
+// Route for register action
+router.post('/user/register', (req: express.Request, res: express.Response) => user.register(req, res));
 
 /**
  * @swagger

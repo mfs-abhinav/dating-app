@@ -10,6 +10,8 @@ import AppError from '../utils/appError';
 interface IUser extends Document {
     email: string;
     password: string;
+    created_at: Date;
+    updated_at: Date;
     toJSON(): string;
     generateAuthToken(): string;
 }
@@ -44,7 +46,9 @@ const userSchema: Schema = new Schema({
             type: String,
             required: true
         }
-    }]
+    }],
+    created_at: Date,
+    updated_at: Date
 });
 
 userSchema.methods.toJSON = function() {
@@ -110,11 +114,13 @@ userSchema.pre('save', async function(this: IUser, next) {
         const salt = await bcrypt.genSalt();
         const hashedPassword = await bcrypt.hash(user.password, salt);
         user.password = hashedPassword;
-
-        next();
-    } else {
-        next();
     }
+    if (!user.created_at) {
+        user.created_at = new Date();
+    }
+    user.updated_at = new Date();
+
+    next();
 });
 
 export const User: IUserModel = model<IUser, IUserModel>('User', userSchema);

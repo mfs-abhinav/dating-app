@@ -22,7 +22,7 @@ class UserController {
         }
     }
 
-    public async signUp(req: Request, res: Response) {
+    public async register(req: Request, res: Response) {
         try {
             const newUser = new User(req.body);
             const user = await newUser.save();
@@ -30,7 +30,7 @@ class UserController {
             res.json(user);
 
         } catch (err) {
-            logger.error(`controller.UserController:signUp - ${JSON.stringify(err.message)}`);
+            logger.error(`controller.UserController:register - ${JSON.stringify(err.message)}`);
             res.status(err.status || httpStatus.INTERNAL_SERVER_ERROR).json({});
         }
     }
