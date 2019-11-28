@@ -19,7 +19,9 @@ class AuthenticationController {
             const password = req.body.password;
 
             const user = await User.findByCredentials(email, password);
-            res.status(httpStatus.OK).json(user);
+            const token = await user.generateAuthToken();
+
+            res.status(httpStatus.OK).json(token);
 
         } catch (err) {
             delete req.body.password; // Remove password before logging the params
