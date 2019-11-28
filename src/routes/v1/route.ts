@@ -1,5 +1,6 @@
 import express from 'express';
 
+import { authenticateRequest } from '../../middlewares/requestAuthentication';
 import Authentication from '../../controllers/security/authenticationController';
 import UserController from '../../controllers/user/userController';
 

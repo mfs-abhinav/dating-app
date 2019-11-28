@@ -4,14 +4,19 @@ import httpStatus from 'http-status-codes';
 
 import logger from '../loaders/logger';
 
+import User from '../models/user';
 
-const preProcessRequest: any = async (req: Request, res: Response, next: NextFunction) => {
-
+const preProcessRequest = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        const token = (req.body && req.body.access_token) || (req.query && req.query.access_token) || req.headers['x-auth'];
+        const user = await User.findByToken(token);
+
+        req['user'] = user;
+        req['token'] = token;
         next();
     } catch (err) {
         logger.error(`preProcessRequest - ${err.message}`);
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: err.message });
+        res.status(err.status || httpStatus.INTERNAL_SERVER_ERROR).json(err.message || 'Error Occured');
     }
 };
 

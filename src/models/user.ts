@@ -16,6 +16,7 @@ interface IUser extends Document {
 
 export interface IUserModel extends Model<IUser> {
     findByCredentials(email: string, password: string): any;
+    findByToken(token: string): any;
 }
 
 const userSchema: Schema = new Schema({
@@ -62,6 +63,34 @@ userSchema.methods.generateAuthToken = async function() {
     await user.save();
 
     return token;
+};
+
+userSchema.methods.removeToken = function(token: string) {
+    const user = this;
+
+    return user.update({
+        $pull: {
+            tokens: {
+                token
+            }
+        }
+    });
+};
+
+userSchema.statics.findByToken = async function(token: string) {
+    let decoded: any;
+
+    try {
+        decoded = jwt.verify(token, global['gConfig'].JWT_SECRET);
+    } catch (e) {
+        return Promise.reject(new AppError('Invalid token', httpStatus.UNAUTHORIZED));
+    }
+
+    return await this.findOne({
+        _id: decoded._id,
+        'tokens.token': token,
+        'tokens.access': decoded.access
+    });
 };
 
 userSchema.statics.findByCredentials = async function(email: string, password: string) {

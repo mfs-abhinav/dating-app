@@ -32,14 +32,13 @@ class AuthenticationController {
 
     // method to process logout and close events
     public async processLogout(req: Request, res: Response) {
-        let result = 'SUCCESS';
 
         try {
-            res.status(httpStatus.OK).json(result);
+            await req['user'].removeToken(req['token']);
+            res.status(httpStatus.OK).send('Logged-out sucessfully');
         } catch (err) {
-            result = 'failure';
-            logger.error(`controller.AuthenticationController:processLogout - ${JSON.stringify(err.message)} - incoming request parameters- ${JSON.stringify(req.body)}`);
-            res.status(err.status || httpStatus.INTERNAL_SERVER_ERROR).json(result);
+            logger.error(`controller.AuthenticationController:processLogout - ${JSON.stringify(err.message)}`);
+            res.status(httpStatus.UNAUTHORIZED).json('Logout failed');
         }
     }
 }

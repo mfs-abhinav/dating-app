@@ -13,19 +13,6 @@ import logger from './logger';
 
 export default (app: express.Express) => {
 
-    // Enable Cross Origin Resource Sharing to all origins by default
-    // To-do : need to add the domain to restrict this for specific domains. This origin will change as per the client server setup
-    app.use(cors({
-        origin: [
-            `${global['gConfig'].DASHBOARD_PATH}`
-        ],
-        methods: 'POST, GET, OPTIONS, DELETE, PUT',
-        credentials: true
-    }));
-
-    // needed to fix NodeJS UNABLE_TO_VERIFY_LEAF_SIGNATURE error
-    process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = '0';
-
     // Middleware that transforms the raw string of req.body into json
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(bodyParser.json());
