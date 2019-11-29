@@ -9,7 +9,9 @@
         "MONGO_DB_SERVER_URL": "mongodb+srv://admin:password_123@cluster0-v8tdz.mongodb.net/test?retryWrites=true&w=majority",
         "MONGO_DB_AUTH_MECHANISM": "SCRAM-SHA-1",
         "MONGO_DB_CONNECTION_POOL_SIZE": 10,
-        "JWT_SECRET": "dsbvjvb"
+        "JWT_SECRET": "dsbvjvb",
+        "MAIL_API_KEY": "2819140111ec585eb4dfd4bea464138a-a5d1a068-f830e102",
+        "MAIL_DOMAIN": "sandbox98cbd5e5b110422392ee10a112055168.mailgun.org"
     },
     "development": {
         "PORT": 8090,
@@ -21,7 +23,9 @@
         "MONGO_DB_SERVER_URL": "mongodb+srv://admin:password_123@cluster0-v8tdz.mongodb.net/test?retryWrites=true&w=majority",
         "MONGO_DB_AUTH_MECHANISM": "SCRAM-SHA-1",
         "MONGO_DB_CONNECTION_POOL_SIZE": 10,
-        "JWT_SECRET": "dsbvjvb"
+        "JWT_SECRET": "dsbvjvb",
+        "MAIL_API_KEY": "2819140111ec585eb4dfd4bea464138a-a5d1a068-f830e102",
+        "MAIL_DOMAIN": "sandbox98cbd5e5b110422392ee10a112055168.mailgun.org"
     },
     "qa": {
         "PORT": 8090,
@@ -33,6 +37,8 @@
         "MONGO_DB_SERVER_URL": "mongodb+srv://admin:password_123@cluster0-v8tdz.mongodb.net/test?retryWrites=true&w=majority",
         "MONGO_DB_AUTH_MECHANISM": "SCRAM-SHA-1",
         "MONGO_DB_CONNECTION_POOL_SIZE": 10,
-        "JWT_SECRET": "dsbvjvb"
+        "JWT_SECRET": "dsbvjvb",
+        "MAIL_API_KEY": "2819140111ec585eb4dfd4bea464138a-a5d1a068-f830e102",
+        "MAIL_DOMAIN": "sandbox98cbd5e5b110422392ee10a112055168.mailgun.org"
     }
 }

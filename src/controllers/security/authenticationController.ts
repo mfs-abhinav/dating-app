@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 import AuthenticationService from '../../services/security/authenticationService';
 import logger from '../../loaders/logger';
 import User from '../../models/user';
+import AppUtil from '../../utils/appUtil';
 
 
 class AuthenticationController {
@@ -61,9 +62,14 @@ class AuthenticationController {
             const secret = user.password + '-' + user.created_at.getTime();
             const token = jwt.sign(payload, secret).toString();
 
-            // TODO: Send email containing link to reset password.
+            // Send email containing link to reset password.
+            AppUtil.sendMail(user.email
+                            , 'Password reset link'
+                            , `Please click <a href="${req.headers.origin}${global['gConfig'].API_PREFIX}v1/password/reset/${payload.id}/${token}">Reset password</a> link to reset password.`);
+
             // In our case, will just return a link to click.
-            res.send('<a href="/resetpassword/' + payload.id + '/' + token + '">Reset password</a>');
+            res.send('Password reset link is sent to user email id');
+
         } else {
             res.send('Email address is missing.');
         }
@@ -82,12 +88,14 @@ class AuthenticationController {
             const payload = jwt.verify(token, secret);
 
             // TODO:Create form to reset password.
-            res.send('<form action="/resetpassword" method="POST">' +
-                        '<input type="hidden" name="id" value="' + payload['id'] + '" />' +
-                        '<input type="hidden" name="token" value="' + req.params.token + '" />' +
-                        '<input type="password" name="password" value="" placeholder="Enter your new password..." />' +
-                        '<input type="submit" value="Reset Password" />' +
-                    '</form>');
+            res.send(`
+                    <form action="http://localhost:8090${global['gConfig'].API_PREFIX}v1/password/reset" method="POST">
+                        <input type="hidden" name="id" value="${payload['id']}" />
+                        <input type="hidden" name="token" value="${req.params.token}" />
+                        <input type="password" name="password" value="" placeholder="Enter your new password..." />
+                        <input type="submit" value="Reset Password" />
+                    </form>
+            `);
         } catch (error) {
             res.send('Invalid token.');
         }

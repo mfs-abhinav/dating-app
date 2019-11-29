@@ -7,7 +7,7 @@ export default (app: any) => {
     const options = {
         swaggerDefinition: {
             info: {
-                title: 'appName API Documentation',
+                title: 'DatingApp API Documentation',
                 version: '1.0.0',
             },
             basePath: `${global['gConfig'].API_PREFIX + 'v1'}`,

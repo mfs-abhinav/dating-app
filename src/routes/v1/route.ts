@@ -129,9 +129,9 @@ router.post('/password/reset/token', (req: express.Request, res: express.Respons
  *   get:
  *     tags:
  *       - Auth
+ *     name: verifyPasswordResetToken
  *     summary: Verify password reset token
- *     produces:
- *       - application/json
+ *     operationId: verifyPasswordResetToken
  *     parameters:
  *       - description: UserId
  *         in: path
