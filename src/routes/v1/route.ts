@@ -19,7 +19,7 @@ router.get('/', (req, res) => {
  * /login:
  *   post:
  *     tags:
- *       - Login
+ *       - Auth
  *     name: login
  *     summary: Process authentication
  *     operationId: login
@@ -52,7 +52,7 @@ router.post('/login', (req: express.Request, res: express.Response) => authentic
  * /user/register:
  *   post:
  *     tags:
- *       - Register
+ *       - User
  *     name: register
  *     summary: Register user
  *     operationId: register
@@ -81,7 +81,7 @@ router.post('/user/register', (req: express.Request, res: express.Response) => u
  * /logout:
  *   post:
  *     tags:
- *       - Logout
+ *       - Auth
  *     name: logout
  *     summary: Process logout
  *     operationId: logout
@@ -95,12 +95,12 @@ router.post('/logout', (req: express.Request, res: express.Response) => authenti
 /**
  * @swagger
  * paths:
- * /passwordResetToken:
+ * /password/reset/token:
  *   post:
  *     tags:
- *       - Password Reset Token
+ *       - Auth
  *     name: passwordResetToken
- *     summary: Reset password Token
+ *     summary: Fetch password reset token
  *     operationId: passwordResetToken
  *     parameters:
  *      - name: body
@@ -120,15 +120,15 @@ router.post('/logout', (req: express.Request, res: express.Response) => authenti
  *       description: email or password missing
  */
 // Route for password reset action
-router.post('/passwordResetToken', (req: express.Request, res: express.Response) => authenticate.passwordResetToken(req, res));
+router.post('/password/reset/token', (req: express.Request, res: express.Response) => authenticate.passwordResetToken(req, res));
 
 /**
  * @swagger
  * paths:
- * /resetpassword/{id}/{token}:
+ * /password/reset/{id}/{token}:
  *   get:
  *     tags:
- *       - Verify Password Reset Token
+ *       - Auth
  *     summary: Verify password reset token
  *     produces:
  *       - application/json
@@ -156,15 +156,15 @@ router.post('/passwordResetToken', (req: express.Request, res: express.Response)
  *         description: Server error
  */
 // Route for password reset action
-router.get('/resetpassword/:id/:token', (req: express.Request, res: express.Response) => authenticate.verifyPasswordResetToken(req, res));
+router.get('/password/reset/:id/:token', (req: express.Request, res: express.Response) => authenticate.verifyPasswordResetToken(req, res));
 
 /**
  * @swagger
  * paths:
- * /resetpassword:
+ * /password/reset:
  *   post:
  *     tags:
- *       - Password Reset
+ *       - Auth
  *     name: resetpassword
  *     summary: Reset password
  *     operationId: resetpassword
@@ -192,7 +192,7 @@ router.get('/resetpassword/:id/:token', (req: express.Request, res: express.Resp
  *       description: email or password missing
  */
 // Route for reset password with new password
-router.post('/resetpassword', (req: express.Request, res: express.Response) => authenticate.resetPassword(req, res));
+router.post('/password/reset', (req: express.Request, res: express.Response) => authenticate.resetPassword(req, res));
 
 export default router;
 

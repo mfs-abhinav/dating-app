@@ -49,9 +49,9 @@ export default (app: express.Express) => {
             { url: `${global['gConfig'].API_PREFIX}v1`, methods: ['GET'] },
             { url: `${global['gConfig'].API_PREFIX}v1/login`, methods: ['POST'] },
             { url: `${global['gConfig'].API_PREFIX}v1/user/register`, methods: ['POST'] },
-            { url: `${global['gConfig'].API_PREFIX}v1/passwordResetToken`, methods: ['POST'] },
-            { url: `${global['gConfig'].API_PREFIX}v1/resetpassword`, methods: ['POST'] },
-            { url: new RegExp(regexEscape(global['gConfig'].API_PREFIX) + 'v1\/resetpassword\/.*/'), methods: ['GET'] }
+            { url: `${global['gConfig'].API_PREFIX}v1/password/reset/token`, methods: ['POST'] },
+            { url: `${global['gConfig'].API_PREFIX}v1/password/reset`, methods: ['POST'] },
+            { url: new RegExp(regexEscape(global['gConfig'].API_PREFIX) + 'v1\/password\/reset\/.*/'), methods: ['GET'] }
         ]
     }));
 
