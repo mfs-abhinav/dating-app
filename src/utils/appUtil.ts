@@ -16,6 +16,7 @@ class AppUtil {
         };
 
         try {
+            logger.info(`Sending email to ${to} for ${subject}`);
             AppUtil.mg.messages().send(mailData);
         } catch (err) {
             logger.error(`Error occured at utils.AppUtil:sendMail - ${err.message}`);

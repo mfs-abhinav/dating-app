@@ -121,5 +121,28 @@ class AuthenticationController {
             res.send('Password reset failed.');
         }
     }
+
+    // method to activate user
+    public async activateAccount(req: Request, res: Response) {
+        const { id, token } = req.params;
+        if (!id || !token) {
+            res.send('Something is wrong.');
+        }
+
+        try {
+            const user = await User.findOne({_id: id});
+            const secret = user.password + '-' + user.created_at.getTime();
+
+            // verify token
+            jwt.verify(token, secret);
+
+            user.active = true;
+            await user.save();
+
+            res.send('Congratulations!!...User is activated. Please login');
+        } catch (error) {
+            res.send('Invalid token.');
+        }
+    }
 }
 export default AuthenticationController;

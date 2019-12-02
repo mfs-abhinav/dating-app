@@ -10,6 +10,7 @@ import AppError from '../utils/appError';
 interface IUser extends Document {
     email: string;
     password: string;
+    active: boolean;
     created_at: Date;
     updated_at: Date;
     user_profile: Schema.Types.ObjectId;
@@ -37,6 +38,10 @@ const userSchema: Schema = new Schema({
         type: String,
         required: true,
         minlength: 6
+    },
+    active: {
+        type: Boolean,
+        required: true
     },
     tokens: [{
         access: {
@@ -104,10 +109,17 @@ userSchema.statics.findByToken = async function(token: string) {
 
 userSchema.statics.findByCredentials = async function(email: string, password: string) {
     const user = await this.findOne({email});
+    if (!user) {
+        return Promise.reject(new AppError('User not found in system', httpStatus.UNAUTHORIZED));
+    }
+
+    if (!user.active) {
+        return Promise.reject(new AppError('User is not active.', httpStatus.UNAUTHORIZED));
+    }
     const passwordMatched = await bcrypt.compare(password, user.password);
 
-    if (!user || !passwordMatched) {
-        return Promise.reject(new AppError('Invalid email or password', httpStatus.UNAUTHORIZED));
+    if (!passwordMatched) {
+        return Promise.reject(new AppError('Password does not match', httpStatus.UNAUTHORIZED));
     }
 
     return user;

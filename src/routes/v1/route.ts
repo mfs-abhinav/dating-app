@@ -49,47 +49,6 @@ router.post('/login', (req: express.Request, res: express.Response) => authentic
 /**
  * @swagger
  * paths:
- * /user/register:
- *   post:
- *     tags:
- *       - User
- *     name: register
- *     summary: Register user
- *     operationId: register
- *     parameters:
- *      - name: body
- *        in: body
- *        schema:
- *          type: object
- *          properties:
- *            email:
- *              type: string
- *              example: test@test.com
- *            password:
- *              type: string
- *              example: password1
- *            firstName:
- *              type: string
- *              example: Abhinav
- *            lastName:
- *              type: string
- *              example: Kumar
- *            age:
- *              type: number
- *              example: 29
- *            gender:
- *              type: string
- *              example: Male
- *     responses:
- *      200:
- *       description: User created in successfully
- */
-// Route for register action
-router.post('/user/register', (req: express.Request, res: express.Response) => user.register(req, res));
-
-/**
- * @swagger
- * paths:
  * /logout:
  *   post:
  *     tags:
@@ -215,6 +174,83 @@ router.get('/password/reset/:id/:token', (req: express.Request, res: express.Res
  */
 // Route for reset password with new password
 router.post('/password/reset', (req: express.Request, res: express.Response) => authenticate.resetPassword(req, res));
+
+/**
+ * @swagger
+ * paths:
+ * /user/activate/{id}/{token}:
+ *   get:
+ *     tags:
+ *       - Auth
+ *     name: activateAccount
+ *     summary: Activate user account
+ *     operationId: activateAccount
+ *     parameters:
+ *       - description: UserId
+ *         in: path
+ *         name: id
+ *         required: true
+ *         type: string
+ *       - description: token
+ *         in: path
+ *         name: token
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: Success
+ *       401:
+ *         description: Unauthorized request
+ *       404:
+ *         description: Record not found
+ *       400:
+ *         description: Bad data requested
+ *       500:
+ *         description: Server error
+ */
+// Route for password reset action
+router.get('/user/activate/:id/:token', (req: express.Request, res: express.Response) => authenticate.activateAccount(req, res));
+
+/**
+ * @swagger
+ * paths:
+ * /user/register:
+ *   post:
+ *     tags:
+ *       - User
+ *     name: register
+ *     summary: Register user
+ *     operationId: register
+ *     parameters:
+ *      - name: body
+ *        in: body
+ *        schema:
+ *          type: object
+ *          properties:
+ *            email:
+ *              type: string
+ *              example: test@test.com
+ *            password:
+ *              type: string
+ *              example: password1
+ *            firstName:
+ *              type: string
+ *              example: Abhinav
+ *            lastName:
+ *              type: string
+ *              example: Kumar
+ *            age:
+ *              type: number
+ *              example: 29
+ *            gender:
+ *              type: string
+ *              example: Male
+ *     responses:
+ *      200:
+ *       description: User created in successfully
+ */
+// Route for register action
+router.post('/user/register', (req: express.Request, res: express.Response) => user.register(req, res));
 
 export default router;
 

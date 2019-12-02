@@ -21,7 +21,7 @@ class UserController {
             const {email, password, firstName, lastName, gender, age} = req.body;
 
             const userProfile = new UserProfile({ first_name: firstName, last_name: lastName, gender, age });
-            const newUser = new User({ email, password, user_profile: userProfile._id });
+            const newUser = new User({ email, password, active: false, user_profile: userProfile._id });
             const user = await newUser.save();
             await userProfile.save();
 
@@ -36,7 +36,7 @@ class UserController {
             // Send email to activate account.
             AppUtil.sendMail(user.email
                             , 'Account activation'
-                            , `Please click <a href="${req.headers.origin}${global['gConfig'].API_PREFIX}v1/user/activate/${payload.id}/${token}">Account Activate</a> link to activate account.`);
+                            , `Please click <a href="${req.headers.origin}${global['gConfig'].API_PREFIX}v1/user/activate/${payload.id}/${token}">Activate Account</a> link to activate account.`);
 
 
             res.json(user);
