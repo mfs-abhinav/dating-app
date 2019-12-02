@@ -12,6 +12,7 @@ interface IUser extends Document {
     password: string;
     created_at: Date;
     updated_at: Date;
+    user_profile: Schema.Types.ObjectId;
     toJSON(): string;
     generateAuthToken(): string;
 }
@@ -47,9 +48,13 @@ const userSchema: Schema = new Schema({
             required: true
         }
     }],
+    user_profile: {
+        type: Schema.Types.ObjectId,
+        ref: 'User_Profile'
+    },
     created_at: Date,
     updated_at: Date
-});
+}, { collection: 'user'});
 
 userSchema.methods.toJSON = function() {
     const user = this;

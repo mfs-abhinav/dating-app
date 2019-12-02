@@ -68,6 +68,18 @@ router.post('/login', (req: express.Request, res: express.Response) => authentic
  *            password:
  *              type: string
  *              example: password1
+ *            firstName:
+ *              type: string
+ *              example: Abhinav
+ *            lastName:
+ *              type: string
+ *              example: Kumar
+ *            age:
+ *              type: number
+ *              example: 29
+ *            gender:
+ *              type: string
+ *              example: Male
  *     responses:
  *      200:
  *       description: User created in successfully
@@ -85,6 +97,16 @@ router.post('/user/register', (req: express.Request, res: express.Response) => u
  *     name: logout
  *     summary: Process logout
  *     operationId: logout
+ *     parameters:
+ *      - name: body
+ *        in: body
+ *        schema:
+ *          type: object
+ *          properties:
+ *            access_token:
+ *              type: string
+ *              example: token
+ *              required: false
  *     responses:
  *      200:
  *       description: logout processed successfully
