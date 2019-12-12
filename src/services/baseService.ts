@@ -1,11 +1,6 @@
-import BaseDAO from '../dao/baseDAO';
-
 class BaseService {
-    private baseDAO: BaseDAO;
 
-    constructor(baseDAO?: BaseDAO) {
-        this.baseDAO = baseDAO || new BaseDAO();
-    }
+    constructor() { }
 
     // date compare
     public compareDate(date1: Date, date2: Date) {

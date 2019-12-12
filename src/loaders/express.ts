@@ -2,7 +2,6 @@ import * as express from 'express';
 import session from 'express-session';
 import * as bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
-import cors from 'cors';
 import rfs from 'rotating-file-stream';
 import morgan from 'morgan';
 import httpStatus from 'http-status-codes';
@@ -22,7 +21,8 @@ export default (app: express.Express) => {
   // To-Do: Change the file path in future
   const accessLogStream = rfs('access.log', {
     interval: '1d', // rotate daily
-    path: global['gConfig'].ACCSS_LOG_PATH
+    path: global['gConfig'].ACCSS_LOG_PATH,
+    compress: 'gzip'
   });
 
   app.use(morgan('combined', { stream: accessLogStream }));
@@ -89,9 +89,7 @@ export default (app: express.Express) => {
     (
       err: any,
       req: express.Request,
-      res: express.Response,
-      next: express.NextFunction
-    ) => {
+      res: express.Response    ) => {
       logger.error(
         `Error occured ${err.status} - ${JSON.stringify(err.message)}`
       );
@@ -105,9 +103,7 @@ export default (app: express.Express) => {
   app.use(
     (
       req: express.Request,
-      res: express.Response,
-      next: express.NextFunction
-    ) => {
+      res: express.Response    ) => {
       res
         .status(httpStatus.NOT_FOUND)
         .send({ message: `Page ${req.url} Not found.` });
@@ -124,7 +120,7 @@ export default (app: express.Express) => {
     app.emit('appStarted');
     console.log(`Server listening on port: ${global['gConfig'].PORT}`);
     console.log(
-      'SwaggerUI is running on http://localhost:8090/datingapp/services/api-docs/'
+      `SwaggerUI is running on http://localhost:${global['gConfig'].PORT}/datingapp/services/api-docs/`
     );
     logger.info(`Server listening on port: ${global['gConfig'].PORT}`);
   });
