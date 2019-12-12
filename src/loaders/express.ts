@@ -12,94 +12,137 @@ import routes from '../routes/v1/route';
 import logger from './logger';
 
 export default (app: express.Express) => {
+  // Middleware that transforms the raw string of req.body into json
+  app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(bodyParser.json());
 
-    // Middleware that transforms the raw string of req.body into json
-    app.use(bodyParser.urlencoded({ extended: true }));
-    app.use(bodyParser.json());
+  // Middleware to parse the cookie and populate req.cookies with an object keyed by the cookie names
+  app.use(cookieParser());
 
-    // Middleware to parse the cookie and populate req.cookies with an object keyed by the cookie names
-    app.use(cookieParser());
+  // To-Do: Change the file path in future
+  const accessLogStream = rfs('access.log', {
+    interval: '1d', // rotate daily
+    path: global['gConfig'].ACCSS_LOG_PATH
+  });
 
-    // To-Do: Change the file path in future
-    const accessLogStream = rfs('access.log', {
-        interval: '1d', // rotate daily
-        path: global['gConfig'].ACCSS_LOG_PATH
-    });
+  app.use(morgan('combined', { stream: accessLogStream }));
 
-    app.use(morgan('combined', { stream: accessLogStream }));
+  // To-Do: Secret values will be changed in future and need to move to config files.
+  app.use(
+    session({
+      secret: '27soR5gWBLXVrVta9iylRa1wNIM',
+      resave: true,
+      saveUninitialized: true,
+      rolling: true,
+      cookie: {
+        maxAge: 30000
+      }
+    })
+  );
 
-    // To-Do: Secret values will be changed in future and need to move to config files.
-    app.use(session({
-        secret: '27soR5gWBLXVrVta9iylRa1wNIM',
-        resave: true,
-        saveUninitialized: true,
-        rolling: true,
-        cookie: {
-            maxAge: 30000
+  const regexEscape = (s: string) => {
+    return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+  };
+
+  // middleware for request authentication
+  app.use(
+    authenticateRequest.unless({
+      path: [
+        { url: `${global['gConfig'].API_PREFIX}v1`, methods: ['GET'] },
+        { url: `${global['gConfig'].API_PREFIX}v1/login`, methods: ['POST'] },
+        {
+          url: `${global['gConfig'].API_PREFIX}v1/user/register`,
+          methods: ['POST']
+        },
+        {
+          url: `${global['gConfig'].API_PREFIX}v1/password/reset/token`,
+          methods: ['POST']
+        },
+        {
+          url: `${global['gConfig'].API_PREFIX}v1/password/reset`,
+          methods: ['POST']
+        },
+        {
+          url: new RegExp(
+            regexEscape(global['gConfig'].API_PREFIX) + 'v1/password/reset/.*/'
+          ),
+          methods: ['GET']
+        },
+        {
+          url: new RegExp(
+            regexEscape(global['gConfig'].API_PREFIX) + 'v1/user/activate/.*/'
+          ),
+          methods: ['GET']
         }
-    }));
+      ]
+    })
+  );
 
-    const regexEscape = (s: string) => {
-        return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-    };
+  // Load API routes
+  app.use(global['gConfig'].API_PREFIX + 'v1', routes);
 
-    // middleware for request authentication
-    app.use(authenticateRequest.unless({
-        path: [
-            { url: `${global['gConfig'].API_PREFIX}v1`, methods: ['GET'] },
-            { url: `${global['gConfig'].API_PREFIX}v1/login`, methods: ['POST'] },
-            { url: `${global['gConfig'].API_PREFIX}v1/user/register`, methods: ['POST'] },
-            { url: `${global['gConfig'].API_PREFIX}v1/password/reset/token`, methods: ['POST'] },
-            { url: `${global['gConfig'].API_PREFIX}v1/password/reset`, methods: ['POST'] },
-            { url: new RegExp(regexEscape(global['gConfig'].API_PREFIX) + 'v1\/password\/reset\/.*/'), methods: ['GET'] },
-            { url: new RegExp(regexEscape(global['gConfig'].API_PREFIX) + 'v1\/user\/activate\/.*/'), methods: ['GET'] }
-        ]
-    }));
+  // make port configurable
+  const PORT = process.env.NODE_PORT || global['gConfig'].PORT;
 
-    // Load API routes
-    app.use(global['gConfig'].API_PREFIX + 'v1', routes);
+  // global exception handler
+  app.use(
+    (
+      err: any,
+      req: express.Request,
+      res: express.Response,
+      next: express.NextFunction
+    ) => {
+      logger.error(
+        `Error occured ${err.status} - ${JSON.stringify(err.message)}`
+      );
+      res
+        .status(err.status || httpStatus.INTERNAL_SERVER_ERROR)
+        .json({ status: err.status, message: err.message });
+    }
+  );
 
-    // make port configurable
-    const PORT = process.env.NODE_PORT || global['gConfig'].PORT;
+  // global route handler
+  app.use(
+    (
+      req: express.Request,
+      res: express.Response,
+      next: express.NextFunction
+    ) => {
+      res
+        .status(httpStatus.NOT_FOUND)
+        .send({ message: `Page ${req.url} Not found.` });
+    }
+  );
 
-    // global exception handler
-    app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-        logger.error(`Error occured ${err.status} - ${JSON.stringify(err.message)}`);
-        res.status(err.status || httpStatus.INTERNAL_SERVER_ERROR).json({ status: err.status, message: err.message });
-    });
+  // comment this block when node runs on https
+  const server = app.listen(PORT, (err: any) => {
+    if (err) {
+      logger.error(err);
+      process.exit(1);
+      return;
+    }
+    app.emit('appStarted');
+    console.log(`Server listening on port: ${global['gConfig'].PORT}`);
+    console.log(
+      'SwaggerUI is running on http://localhost:8090/datingapp/services/api-docs/'
+    );
+    logger.info(`Server listening on port: ${global['gConfig'].PORT}`);
+  });
 
-    // global route handler
-    app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
-        res.status(httpStatus.NOT_FOUND).send({ message: `Page ${req.url} Not found.` });
-    });
+  process.on('uncaughtException', err => {
+    logger.error(err);
+    process.exit(1);
+    return;
+  });
 
-    // comment this block when node runs on https
-    const server = app.listen(PORT, (err: any) => {
-        if (err) {
-            logger.error(err);
-            process.exit(1);
-            return;
-        }
-        app.emit('appStarted');
-        console.log(`Server listening on port: ${global['gConfig'].PORT}`);
-        logger.info(`Server listening on port: ${global['gConfig'].PORT}`);
-    });
+  app.on('close', err => {
+    if (err) {
+      logger.error(err);
+      process.exit(1);
+      return;
+    }
+    server.close();
+  });
 
-    process.on('uncaughtException', (err) => {
-        logger.error(err);
-        process.exit(1);
-        return;
-    });
-
-    app.on('close', (err) => {
-        if (err) {
-            logger.error(err);
-            process.exit(1);
-            return;
-        }
-        server.close();
-    });
-
-    logger.debug('Express app loaded successfully');
-
+  logger.debug('Express app loaded successfully');
 };
